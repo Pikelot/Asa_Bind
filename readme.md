@@ -13,4 +13,8 @@ docker run
     --name para dizer o nome
 $ docker run -d -p 53:53/udp -p 53:53/tcp --name bind9 ubuntu-bind
 $ docker run -p 53:53/udp -p 53:53/tcp --name bind9 ubuntu-bind
-doc
+
+$docker run -p 80:80/tcp --name web nginx //executando com nginx
+docker run -p 80:80/tcp --name web nginx
+
+docker exec -it //entrar no containercontinue
