@@ -15,15 +15,18 @@ Como funciona a inicialização?!();
 
             Agora o script vai rodar as duas imagems()
             {
-                
+                docker run -d -p 53:53/udp -p 53:53/tcp --name bind9 ubuntu-bind
+
+                docker run -p 80:80/tcp --name web nginx
             }
     
     
     
     }
 
-$ docker run -d -p 53:53/udp -p 53:53/tcp --name bind9 ubuntu-bind
-$ docker run -p 53:53/udp -p 53:53/tcp --name bind9 ubuntu-bind
+#anotações
+#$ docker run -d -p 53:53/udp -p 53:53/tcp --name bind9 ubuntu-bind
+#$ docker run -p 53:53/udp -p 53:53/tcp --name bind9 ubuntu-bind
 
 $docker run -p 80:80/tcp --name web nginx //executando com nginx
 $docker run -p 80:80/tcp --name web nginx
