@@ -13,3 +13,4 @@ $TTL	604800
 @	IN	A	127.0.0.1
 www IN  A   10.25.1.152
 portal IN CNAME www
+joao	IN CNAME www

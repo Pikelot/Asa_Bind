@@ -16,4 +16,12 @@ services:
         dockerfile: Dockerfile
       container_name: web
       ports:
+        - "81:80/tcp"
+    
+    proxy:
+      build:
+        context: ./proxy
+        dockerfile: Dockerfile
+      container_name: proxy-nginx
+      ports:
         - "80:80/tcp"
