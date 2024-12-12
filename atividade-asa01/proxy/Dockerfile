@@ -1,5 +1,7 @@
 FROM nginx:latest
 
+COPY Godzilla_Drop_Kick.mp4 /usr/share/nginx/html/
+
 # Copia a configuração do servidor
 COPY default.conf /etc/nginx/conf.d
 
