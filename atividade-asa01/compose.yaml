@@ -25,7 +25,15 @@ services:
       container_name: asa-server2
       networks:
         - asa-network
-    
+
+    home:
+      build:
+        context: ./web
+        dockerfile: Dockerfile
+      container_name: home
+      networks:
+        - asa-network
+
     proxy:
       build:
         context: ./proxy
