@@ -21,4 +21,5 @@ www	IN	A	10.0.2.15
 proxy	IN	CNAME	www
 sales	IN	A	10.0.2.15
 joao	IN	A	10.0.2.15
+alanna	IN	a	10.0.2.15
 192.168.0.4 IN CNAME 10.0.2.15
