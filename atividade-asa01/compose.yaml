@@ -80,7 +80,7 @@ services:
       - asa-server02
       - sales
       - joao
-      - rafael
+      - alanna
     networks:
       - asa-network
 
