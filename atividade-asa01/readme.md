@@ -1,70 +1,87 @@
-# Proxy reverso + HTTP + DNS
-Repositório da atividade de ASA para criação de Proxy reverso + HTTP + DNS
+# Jãogle - Atividade de ASA usando DNS, HTTP e Proxy
 
-Na atividade passada, foi criado um servidor WEB e um DNS. Agora, daremos o próximo passo e iremos integrar esse sistema com um proxy reverso
-As tarefas necessárias essa atividade são:
+# Este projeto é um exemplo para demonstrar o uso de DNS, HTTP e Proxy reverso com containers Docker.
+# O sistema inclui múltiplos servidores web configurados com NGINX, além de um servidor BIND9 (DNS).
 
-1. Configurar os registros corretamente no DNS e executá-lo
-2. Configurar os servidores web de cada site
-3. Configurar o Proxy Reverso para cada site
-4. Executar o proxy reverso e os servidores web
-5. Configurar o cliente para usar o servidor de DNS para resolver nomes (Congiguração de IP / DNS)
-6. Apontar o navegador para o endereço correto, exemplo: www.rafael.asa.br
-7. Verificar os logs dos serviços
-   
-## Entendendo o ambiente
+# Estrutura do Projeto:
+# Containers principais:
+# - DNS (bind9): Gerencia a resolução de nomes.
+# - Servidores Web (NGINX):
+#   - joao.asa.br → Servidor joao
+#   - sales.joao.asa.br → Servidor sales
+#   - alanna.joao.asa.br → Servidor alanna
+# - Proxy Reverso (NGINX):
+#   - proxy.joao.asa.br → Roteia o tráfego HTTP entre os servidores.
 
-Abaixo, está a representação da árvore de diretórios e arquivos utilizados para a atividade:
-~~~
-asa-proxy-dns
-├── asa-server
-│   ├── Dockerfile
-│   └── html
-│       ├── favicon.ico
-│       └── index.html
-├── compose.yaml
-├── dns
-│   ├── bind
-│   │   ├── db.asa.br
-│   │   └── named.conf.local
-│   └── Dockerfile
-├── joao
-│   ├── Dockerfile
-│   └── html
-│       ├── 50x.html
-│       ├── favicon.ico
-│       ├── index.html
-│       ├── index.html.orig
-│       └── tux.svg.png
-├── LICENSE
-├── proxy
-│   ├── default.conf
-│   ├── Dockerfile
-│   └── nginx.conf
-├── rafael
-│   ├── Dockerfile
-│   └── html
-│       ├── 50x.html
-│       ├── favicon.ico
-│       ├── index.html
-│       ├── index.html.orig
-│       └── tux.svg.png
-├── README.md
-├── sales
-│   ├── Dockerfile
-│   └── html
-│       ├── 50x.html
-│       ├── favicon.ico
-│       ├── index.html
-│       ├── index.html.orig
-│       └── tux.svg.png
-└── service.sh
+# Tecnologias Utilizadas:
+# - Docker: Para containerização.
+# - BIND9: Servidor DNS.
+# - NGINX: Servidor HTTP e Proxy Reverso.
+# - HTML e CSS: Desenvolvimento dos sites estáticos.
 
-~~~
-O arquivo **compose.yaml** é um arquivo para execução do comando "docker compose" que automatiza as operações de início (start) e parada (stop) dos serviços. 
+# Como Executar o Projeto:
 
-**Como usar:**
-~~~
-docker compose up --build => Para criar containers
-docker compose down => Para apagar containers 
-~~~
+# Pré-requisitos:
+# Certifique-se de ter os seguintes softwares instalados:
+# - Docker
+# - Docker Compose
+# - Bash (Shell)
+
+# Clone o repositório
+git clone https://github.com/Pikelot/Asa_Bind.git
+cd Asa_Bind
+
+# Suba os containers
+docker compose up --build -d
+
+# Acesse os sites no navegador:
+# - João → http://joao.asa.br
+# - Sales → http://sales.joao.asa.br
+# - Alanna → http://alanna.joao.asa.br
+# - Proxy → http://proxy.joao.asa.br
+
+# Configurações Principais:
+
+# 1. Arquivo compose.yaml:
+# Define os containers e suas configurações:
+# - Servidores Web: asa-server, asa-server02, joao, sales, alanna.
+# - Proxy: Roteia o tráfego HTTP entre os servidores.
+# - DNS: Configura o servidor BIND9 com zonas DNS personalizadas.
+# Rede utilizada: asa-network.
+
+# 2. Arquivo default.conf:
+# Configura o proxy reverso NGINX para os seguintes domínios:
+# | Servidor | Domínio             |
+# |----------|---------------------|
+# | Proxy    | proxy.joao.asa.br   |
+# | Alanna   | alanna.joao.asa.br  |
+# | Sales    | sales.joao.asa.br   |
+# | João     | joao.asa.br         |
+
+# 3. Arquivo db.asa.br:
+# Define as zonas DNS para resolução dos domínios acima.
+
+# Gerenciamento dos Containers:
+
+# Subir os containers:
+docker compose up --build -d
+
+# Parar os containers:
+docker compose down
+
+# Reiniciar os containers:
+docker compose restart
+
+# Pré-visualização dos Sites:
+# - Os sites estão estruturados em HTML e CSS, incluindo:
+#   - Cabeçalho: Título e descrição.
+#   - Seções: Informações do autor e links úteis.
+#   - Vídeo: Disponível no servidor principal.
+
+# Contato:
+# Caso tenha dúvidas ou sugestões:
+# - Email: silvrt3d@gmail.com
+# - GitHub: https://github.com/Pikelot
+
+# Licença:
+# Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
