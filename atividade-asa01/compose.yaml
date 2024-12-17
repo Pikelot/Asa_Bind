@@ -24,11 +24,11 @@ services:
       networks:
         - asa-network
 
-    home:
+    sales:
       build:
-        context: ./web
+        context: ./sales
         dockerfile: Dockerfile
-      container_name: home
+      container_name: sales
       networks:
         - asa-network
 
