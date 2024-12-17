@@ -1,16 +1,24 @@
 ;
 ; BIND data file for local loopback interface
 ;
+$ORIGIN joao.asa.br.
 $TTL	604800
-@	IN	SOA	ns.asa.br. root.asa.br. (
+
+@	IN	SOA	@ root (
 			      1		; Serial
 			 604800		; Refresh
 			  86400		; Retry
 			2419200		; Expire
 			 604800 )	; Negative Cache TTL
 ;
-@	IN	NS	ns.
-@	IN	A	10.25.1.152
-www IN  A   10.25.1.152
-portal IN CNAME www
-joao	IN CNAME www
+@	IN	NS	ns
+@	IN	A	10.0.2.15
+	IN	MX	10	mail
+
+ns	IN	A	10.0.2.15
+mail	IN	A	10.0.2.15
+www	IN	A	10.0.2.15
+proxy	IN	CNAME	www
+sales	IN	A	10.0.2.15
+joao	IN	A	10.0.2.15
+192.168.0.4 IN CNAME 10.0.2.15
