@@ -2,13 +2,13 @@
 // Do any local configuration here
 //
 
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+
 zone "joao.asa.br"{
     type master;
     file "/etc/bind/db.asa.br";
     allow-transfer{ any; };
 };
-
-// Consider adding the 1918 zones here, if they are not used in your
-// organization
-//include "/etc/bind/zones.rfc1918";
-

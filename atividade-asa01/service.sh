@@ -1,111 +1,92 @@
 #!/bin/bash
-ids=()
 
-##if docker image ls | grep -q 
+# Função para verificar se o serviço existe
+check_service() {
+  if ! docker ps -a | grep -q "$1"; then
+    echo "Serviço $1 não encontrado."
+    exit 1
+  fi
+}
 
-if [[ $1 == "start" ]]; then
-    
-    echo "Atualizando o container com as imagens..."
-    docker build -t ubuntu-bind  atividade-asa01/dns
-    docker build -t nginx atividade-asa01/web
+# Função para criar um serviço a partir de uma imagem existente
+create_service_from_image() {
+  docker run -d --name $1 $2
+  echo "Serviço $1 criado a partir da imagem $2."
+}
 
-    echo "rodando o container..."
-    docker run -d -p 53:53/udp -p 53:53/tcp --name bind9 ubuntu-bind
-    docker run -d -p 80:80/tcp --name web nginx
+# Função para criar um serviço a partir de um Dockerfile
+create_service_from_dockerfile() {
+  cd ./$1
+  docker build -t $1 .
+  echo "Serviço $1 criado a partir do Dockerfile."
+}
 
-    clear
+# Função para dar Run no serviço
+run_service() {
+  case "$1" in
+    dns)   
+      docker run -d -p 53:53/tcp -p 53:53/udp --name $1 $1
+      echo "Serviço dns está rodando"
+    ;;
+    web)
+      docker run -d -p 80:80 --name $1 $1
+      echo "Serviço web está rodando"	
+    ;;
+    *)
+     echo "Não existe uma imagem com este nome"
+     echo "Tente utilizar 'dns' ou 'web'"
+  esac
+}
 
-    echo "as imagens atuais são: "
-    docker image ls
-    echo ""
-    echo "os containeres em execução são: "
-    docker ps -a
-    echo ""
-fi
+# Função para iniciar um serviço
+start_service() {
+  check_service $1
+  docker start $1
+  echo "Serviço $1 iniciado."
+}
 
-if [[ $1 == "stop" ]]; then
-    
-    ids=($(docker ps -a --format '{{.ID}}'))
-    
-    echo "iniciando Interrupção e remoção dos containeres!"
+# Função para parar um serviço
+stop_service() {
+  check_service $1
+  docker stop $1
+  echo "Serviço $1 parado."
+}
 
-    for id in "${ids[@]}"; do
-        
-        container_name=$(docker ps -a --filter "id=$id" --format "{{.Names}}")
+# Função para excluir um serviço
+remove_service() {
+  check_service $1
+  docker rm -f $1
+  echo "Serviço $1 excluído."
+}
 
-        if [[ $container_name != "CONTAINER" ]]; then
+# Executa a ação correspondente
+case "$2" in
+  create)
+    if [ $# -ne 3 ]; then
+        echo "Uso: $0 <serviço> <ação> <imagem/Dockerfile>"
+        echo "Ações disponíveis: create, start, stop, remove"
+        exit 1
 
-            docker stop $id
-            docker rm $id
-
-        fi
-    
-    done
-    
-    ids=($(docker image ls --format '{{.ID}}'))
-
-    echo "Iniciando a remoção das imagens"
-   
-    for id in "${ids[@]}"; do
-        
-        if [[ $container_name != "IMAGE" ]]; then
-            
-            docker rmi $id
-
-        fi
-    done
-
-fi
-
-if [[ $1 == "restart" ]]; then
-    
-    ids=($(docker ps -a --format '{{.ID}}'))
-    
-    echo "iniciando Interrupção e remoção dos containeres!"
-
-    for id in "${ids[@]}"; do
-        
-        container_name=$(docker ps -a --filter "id=$id" --format "{{.Names}}")
-
-        if [[ $container_name != "CONTAINER" ]]; then
-
-            docker stop $id
-            docker rm $id
-
-        fi
-    
-    done
-    
-    ids=($(docker image ls --format '{{.ID}}'))
-
-    echo "Iniciando a remoção das imagens"
-   
-    for id in "${ids[@]}"; do
-        
-        if [[ $container_name != "IMAGE" ]]; then
-            
-            docker rmi $id
-
-        fi
-    done
-
-    ###################
-
-    echo "Atualizando o container com as imagens..."
-    docker build -t ubuntu-bind  atividade-asa01/dns
-    docker build -t nginx atividade-asa01/web
-
-    echo "rodando o container..."
-    docker run -d -p 53:53/udp -p 53:53/tcp --name bind9 ubuntu-bind
-    docker run -d -p 80:80/tcp --name web nginx
-
-    clear
-
-    echo "as imagens atuais são: "
-    docker image ls
-    echo ""
-    echo "os containeres em execução são: "
-    docker ps -a
-    echo ""
-
-fi
+    elif [[ -f ./$1/Dockerfile ]]; then
+      create_service_from_dockerfile "$1"
+    else
+      create_service_from_image "$1" "$3"
+    fi
+    ;;
+  start)
+    start_service "$1"
+    ;;
+  stop)
+    stop_service "$1"
+    ;;
+  remove)
+    remove_service "$1"
+    ;;
+  run)
+    run_service "$1"
+    ;;
+  *)
+    echo "Ação inválida. Use 'create', 'start', 'stop' 'run' ou 'remove'."
+    exit 1
+    ;;
+esac

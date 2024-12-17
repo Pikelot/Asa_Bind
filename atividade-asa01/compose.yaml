@@ -1,49 +1,105 @@
 services:
-    dns:
-      build:
-        context: ./dns
-        dockerfile: Dockerfile
-      container_name: dns
-      ports:
-        -  "53:53/tcp"
-        -  "53:53/udp"
-    
-    asa-server:
+
+  asa-server:
+    build:
+      context: ./asa-server
+      dockerfile: Dockerfile
+    image: asa-server
+    container_name: asa-server
+    restart: always
+    tty: true
+    volumes:
+      - ./asa-server/html/:/usr/share/nginx/html/
+    networks:
+      - asa-network
+
+  asa-server02:
       build:
         context: ./asa-server
         dockerfile: Dockerfile
-      container_name: asa-server
-      networks:
-        - asa-network
-    
-    asa-server2:
-      build: 
-        context: ./asa-server
-        dockerfile: Dockerfile
-      container_name: asa-server2
+      image: asa-server
+      container_name: asa-server02
+      restart: always
+      tty: true
+      volumes:
+        - ./asa-server/html/:/usr/share/nginx/html/
       networks:
         - asa-network
 
-    sales:
-      build:
-        context: ./sales
-        dockerfile: Dockerfile
-      container_name: sales
-      networks:
-        - asa-network
+  rafael:
+    build:
+      context: ./rafael
+      dockerfile: Dockerfile
+    image: rafael
+    container_name: rafael
+    restart: always
+    tty: true
+    volumes:
+      - ./rafael/html/:/usr/share/nginx/html/
+    networks:
+      - asa-network
 
-    proxy:
-      build:
-        context: ./proxy
-        dockerfile: Dockerfile
-      container_name: proxy-nginx
-      ports:
-        - 80:80/tcp
-      depends_on:
-        - asa-server
-      networks:
-        - asa-network
+  joao:
+    build:
+      context: ./joao
+      dockerfile: Dockerfile
+    image: joao
+    container_name: joao
+    restart: always
+    tty: true
+    volumes:
+      - ./joao/html/:/usr/share/nginx/html/
+    networks:
+      - asa-network
 
+  sales:
+    build:
+      context: ./sales
+      dockerfile: Dockerfile
+    image: sales
+    container_name: sales
+    restart: always
+    tty: true
+    volumes:
+      - ./sales/html/:/usr/share/nginx/html/
+    networks:
+      - asa-network
+
+  proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    image: proxy
+    container_name: proxy
+    restart: always
+    tty: true
+    ports:
+      - "80:80"
+    depends_on:
+      - asa-server
+      - asa-server02
+      - sales
+      - joao
+      - rafael
+    networks:
+      - asa-network
+
+  dns:
+    build:
+      context: ./dns
+      dockerfile: Dockerfile
+    image: dns
+    volumes:
+      - ./dns/bind/db.asa.br:/etc/bind/db.asa.br
+      - ./dns/bind/named.conf.local:/etc/bind/named.conf.local
+    container_name: dns
+    restart: always
+    tty: true
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    networks:
+      - asa-network
 networks:
   asa-network:
     driver: bridge
