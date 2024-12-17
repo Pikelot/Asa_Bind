@@ -28,14 +28,14 @@ services:
 
   rafael:
     build:
-      context: ./rafael
+      context: ./alanna
       dockerfile: Dockerfile
-    image: rafael
-    container_name: rafael
+    image: alanna
+    container_name: alanna
     restart: always
     tty: true
     volumes:
-      - ./rafael/html/:/usr/share/nginx/html/
+      - ./alanna/html/:/usr/share/nginx/html/
     networks:
       - asa-network
 
