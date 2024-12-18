@@ -1,5 +1,8 @@
 FROM ubuntu:latest
+
 RUN apt update -y
+
+RUN apt-get update
 
 RUN apt upgrade -y
 
