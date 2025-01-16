@@ -100,6 +100,24 @@ services:
       - "53:53/udp"
     networks:
       - asa-network
+
+  email:
+    build:
+      context: ./e-mail
+      dockerfile: Dockerfile
+    image: email
+    volumes:
+      - ./e-mail/main.cf:/etc/postfix/main.cf
+    container_name: e-mail
+    restart: always
+    ports:
+      - "25:25/tcp"
+      - "587:587/tcp"
+      - "110:110/tcp"
+      - "143:143/tcp"
+    networks:
+      - asa-network
+
 networks:
   asa-network:
     driver: bridge
