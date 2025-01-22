@@ -108,6 +108,7 @@ services:
     image: email
     volumes:
       - ./e-mail/main.cf:/etc/postfix/main.cf
+      - ./e-mail/dovecot/dovecot.conf:/etc/dovecot/dovecot.conf
     container_name: e-mail
     restart: always
     ports:
